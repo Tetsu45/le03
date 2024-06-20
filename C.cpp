@@ -19,9 +19,11 @@ class Node{
 class Double_linkedList{
     private:
     Node* head;
+    int length;
     public:
     Double_linkedList(){
         head = NULL;
+        length++;
     }
     ~Double_linkedList(){
         delete[] head;
@@ -50,13 +52,36 @@ void Double_linkedList::delete(int offSet,int op){
         temp2->prev = NULL;
         head =  temp2;
     }
-    else if(op == 2){
+    else  if (op == 2){
         while(temp1->next != NULL){
-            temp1->next = temp1;'
-            '
+            temp1 = temp->next;
+            length++;
+    }
+    delete temp1;
+    }  
+    else {
+        while(temp1->key != offSet){
+            temp1 = temp1->next;
         }
+        temp2 = temp1.prev;
+        delete temp1;
+    }
+}
+void Double_linkedList::printList(){
+    Node* temp =  head;
+    while(temp->next !=  NULL){
+        temp = temp->next
+        length++;
+    }
+    int* arr =  new int[length];
+    temp =  head;
+    while(length--> 0){
+         if(length == 1){
+            cout << temp->key << endl
+         }
+         else cout<< temp->key << " ";
     }
 }
 int main(){
-
+    return 0;
 }
