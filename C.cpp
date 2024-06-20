@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstring>
+#include <cctype>
 using namespace std;
 class Node{
     private:
@@ -81,7 +83,16 @@ void Double_linkedList::printList(){
          }
          else cout<< temp->key << " ";
     }
+    delete[] arr;
 }
 int main(){
+    Double_linkedList linkedList;
+    int data_io,char op_name[13];
+    int n;
+    cin >> n;
+    for(int i = 0;i< n;i++){
+        std::
+    }
+
     return 0;
 }
