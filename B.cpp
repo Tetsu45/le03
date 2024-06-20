@@ -1,55 +1,103 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
-struct Process
-{
-    char* name[10];
-    int time;
-}Process;
-class Queue{
-    private:
+
+struct Process {
+    char name[11];
+    int burstTime;
+    int completionTime;
+};
+
+class Queue {
+private:
     Process* processes;
-    int num_process;
-    int quantum;
-    int front;
-    public:
+    Process* readyQueue;
+    int head;
+    int tail;
+    int size;
+    int queueSize;
+public:
     Queue(){
         processes = NULL;
-        num_process = 0;
-        quantum  =0;
-        front  = -1;
+        readyQueue = NULL;
+        head = 0;
+        tail = 0;
+        size = 0;
+        queueSize = 0;
     }
-    ~Queue(){
+
+    ~Queue() {
         delete[] processes;
+        delete[] readyQueue;
     }
-    void read_inputs(){
-        std:cin >> num_process >> quantum;
-        for(int i = 0; i < num_process;i++){
-            char* name;int num;
-            std::cin >> name >> num;
-            enqueue(&i,name,num);
+
+    void read_inputs(const int& n) {
+        processes = new Process[n];
+        readyQueue = new Process[n];
+        for (int i = 0; i < n; i++) {
+            cin >> processes[i].name;
+            cin >> processes[i].burstTime;
+            processes[i].completionTime = 0;
         }
+        size = n;
     }
-    void enqueue(int* index,char* temp,int a){
-        if(num_process > 0 ) {
-            processes = new Process[num_process];
+
+    void enqueue(Process* process) {
+        readyQueue[tail] = process;
+        tail = (tail + 1) % size;
+        queueSize++;
+    }
+
+    Process* dequeue() {
+        Process* process = readyQueue[head];
+        head = (head + 1) % size;
+        queueSize--;
+        return process;
+    }
+
+    bool isEmpty() {
+        return queueSize == 0;
+    }
+
+    Process* time(const int& n, const int& q) {
+        int currentTime = 0;
+        int finishedCount = 0;
+        Process* finishedList = new Process[n];
+
+        // Initialize ready queue with all processes
+        for (int i = 0; i < n; i++) {
+            enqueue(&processes[i]);
         }
-        std::strcpy(processes[*index]name,temp);
-        processes[*index].time = a;
-    }
-    bool check_queue(int a){
-        if(a > num_process-1){
-            return false;
+
+        while (finishedCount < n) {
+            Process* currentProcess = dequeue();
+
+            int remainBurst = (currentProcess->burstTime > q) ? q : currentProcess->burstTime;
+            currentTime += remainBurst;
+            currentProcess->burstTime -= remainBurst;
+
+            if (currentProcess->burstTime == 0) {
+                currentProcess->completionTime = currentTime;
+                finishedList[finishedCount] = *currentProcess;
+                finishedCount++;
+            } else {
+                enqueue(currentProcess);
+            }
         }
-        else return true;
+
+        return finishedList;
     }
-    Process* de_queue(int* index){
-        Process temp;
-        strcpy(temp.name,processes[*index].name);
-        temp.time =  processes[*index].time;
-        return &temp;
+};
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+    Queue roundQueue;
+    roundQueue.read_inputs(n);
+    Process* finished_list = roundQueue.time(n, q);
+    for (int i = 0; i < n; i++) {
+        cout << finished_list[i].name << " " << finished_list[i].completionTime << endl;
     }
-}
-int main(){
+    delete[] finished_list;
     return 0;
 }
